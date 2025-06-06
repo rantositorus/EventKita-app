@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'screens/homepage.dart';
+import 'features/register/register_screen.dart';
+import 'features/profile-management/profile_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 
@@ -23,7 +25,12 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: const HomePage(),
+      initialRoute: 'home',
+      routes: {
+        'home': (context) => const HomePage(),
+        'register': (context) => const RegisterScreen(),
+        'profile_page': (context) => const ProfilePage(),
+      },
       debugShowCheckedModeBanner: false,
     );
   }

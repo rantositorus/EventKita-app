@@ -28,7 +28,7 @@ class _HomePageState extends State<HomePage> {
             onPressed: () {
               Navigator.of(context).pop();
               // Navigate to register screen
-              // Navigator.push(context, MaterialPageRoute(builder: (_) => RegisterScreen()));
+              Navigator.pushNamed(context, 'register');
             },
             child: const Text('Register'),
           ),
@@ -78,10 +78,17 @@ class _HomePageState extends State<HomePage> {
                 ),
                 ElevatedButton(
                   onPressed: () => _onButtonPressed(user, () {
-                    // Navigate to Profile page
+                    Navigator.pushNamed(context, 'profile_page');
                   }),
                   child: const Text('Profile'),
                 ),
+                ElevatedButton(
+                  onPressed: () => _onButtonPressed(user, () {
+                    FirebaseAuth.instance.signOut();
+                    Navigator.pushNamed(context, 'home');
+                  }),
+                  child: const Text("Logout")
+                )
               ],
             ),
           ),
