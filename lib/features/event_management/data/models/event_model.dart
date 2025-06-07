@@ -1,20 +1,20 @@
-import 'package:equatable/equatable.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'location_model.dart';
 
-class EventModel extends Equatable {
+class EventModel {
   final String id;
   final String creatorId;
   final String title;
   final String description;
-  final DateTime dateTime;
+  final Timestamp dateTime;
   final LocationModel location;
   final int? capacity;
   final String? category;
-  final String? bannerImageUrl;
-  final DateTime createdAt;
-  final DateTime updatedAt;
+  final String? imageUrl;
+  final Timestamp createdAt;
+  final Timestamp? updatedAt;
 
-  const EventModel({
+  EventModel({
     required this.id,
     required this.creatorId,
     required this.title,
@@ -23,55 +23,41 @@ class EventModel extends Equatable {
     required this.location,
     this.capacity,
     this.category,
-    this.bannerImageUrl,
+    this.imageUrl,
     required this.createdAt,
     required this.updatedAt,
   });
 
-  factory EventModel.fromJson(Map<String, dynamic> json) {
+  factory EventModel.fromSnapshot(DocumentSnapshot doc) {
+    final data = doc.data() as Map<String, dynamic>;
     return EventModel(
-      id: json['id'] as String,
-      creatorId: json['creatorId'] as String,
-      title: json['title'] as String,
-      description: json['description'] as String,
-      dateTime: DateTime.parse(json['dateTime'] as String),
-      location: LocationModel.fromJson(json['location'] as Map<String, dynamic>),
-      capacity: json['capacity'] != null ? (json['capacity'] as num).toInt() : null,
-      category: json['category'] as String?,
-      bannerImageUrl: json['bannerImageUrl'] as String?,
-      createdAt: DateTime.parse(json['createdAt'] as String),
-      updatedAt: DateTime.parse(json['updatedAt'] as String),
+      id: doc.id,
+      creatorId: data['creatorId'] as String,
+      title: data['title'] as String,
+      description: data['description'] as String,
+      dateTime: data['dateTime'] as Timestamp,
+      location: LocationModel.fromJson(data['location'] as Map<String, dynamic>),
+      capacity: data['capacity'] as int?,
+      category: data['category'] as String?,
+      imageUrl: data['imageUrl'] as String?,
+      createdAt: data['createdAt'] as Timestamp,
+      updatedAt: data['updatedAt'] as Timestamp?,
     );
   }
 
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> toMap() {
     return {
       'id': id,
       'creatorId': creatorId,
       'title': title,
       'description': description,
-      'dateTime': dateTime.toIso8601String(),
+      'dateTime': dateTime,
       'location': location.toJson(),
       'capacity': capacity,
       'category': category,
-      'bannerImageUrl': bannerImageUrl,
-      'createdAt': createdAt.toIso8601String(),
-      'updatedAt': updatedAt.toIso8601String(),
+      'imageUrl': imageUrl,
+      'createdAt': createdAt,
+      'updatedAt': updatedAt,
     };
   }
-
-  @override
-  List<Object?> get props => [
-        id,
-        creatorId,
-        title,
-        description,
-        dateTime,
-        location,
-        capacity,
-        category,
-        bannerImageUrl,
-        createdAt,
-        updatedAt,
-      ];
 }
