@@ -38,14 +38,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
         return 'Passwords do not match. Please re-enter.';
       default:
         // For other Firebase error codes or unexpected issues
-        debugPrint('Firebase Auth Error: $errorCode'); // Log the original code for debugging
+        debugPrint('Firebase Auth Error: $errorCode');
         return 'An unexpected error occurred. Please try again.';
     }
   }
 
   void toPersonalInfo() {
     if (!context.mounted) return;
-    // Assuming 'personal_info' is a named route you've defined elsewhere
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(

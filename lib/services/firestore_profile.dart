@@ -3,6 +3,21 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class FirestoreProfile {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
+
+  Future<String> getName(String? userId) async {
+  try {
+    DocumentSnapshot doc = await _firestore.collection('users').doc(userId).get();
+    if (doc.exists) {
+      final data = doc.data() as Map<String, dynamic>?;
+      return data?['name'] ?? 'Unknown User';
+    } else {
+      return 'Unknown User';
+    }
+  } catch (e) {
+    throw Exception('Failed to get user name: $e');
+  }
+}
+
   Future<void> createUserProfile(String userId, Map<String, dynamic> profileData) async {
     try {
       // Add a default profile picture from an asset directory

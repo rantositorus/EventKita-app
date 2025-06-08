@@ -107,7 +107,7 @@ class _PersonalInfoState extends State<PersonalInfo> {
                 onPrimary: Colors.white, // Header text
                 onSurface: Colors.black87, // Body text
               ),
-              dialogTheme: const DialogTheme(
+              dialogTheme: const DialogThemeData(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(12.0)),
                 ),

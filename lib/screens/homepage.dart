@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import '../assets/components/event_card.dart';
+import '../services/firestore_profile.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -9,6 +11,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final FirestoreProfile firestoreProfile = FirestoreProfile();
+
   void _showLoginDialog() {
     showDialog(
       context: context,
@@ -19,15 +23,12 @@ class _HomePageState extends State<HomePage> {
           TextButton(
             onPressed: () {
               Navigator.of(context).pop();
-              // Navigate to login screen
-              // Navigator.push(context, MaterialPageRoute(builder: (_) => LoginScreen()));
             },
             child: const Text('Login'),
           ),
           TextButton(
             onPressed: () {
               Navigator.of(context).pop();
-              // Navigate to register screen
               Navigator.pushNamed(context, 'register');
             },
             child: const Text('Register'),
@@ -37,13 +38,48 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  void _onButtonPressed(User? user, VoidCallback onLoggedIn) {
+  void _handleBuatAcara(User? user) {
     if (user == null) {
       _showLoginDialog();
     } else {
-      onLoggedIn();
+      // Navigator.pushNamed(context, 'create_event');
     }
   }
+
+  void _handleDaftar(User? user) {
+    if (user == null) {
+      _showLoginDialog();
+    } else {
+      // Navigator.pushNamed(context, 'rsvp_event');
+    }
+  }
+
+  final List<Map<String, String>> events = const [
+    {
+      'title': 'Title',
+      'description': 'Description duis aute irure dolor in reprehenderit in voluptate velit.',
+      'location': 'Hotel ABC',
+      'date': '10 November 2025',
+    },
+    {
+      'title': 'Title',
+      'description': 'Description duis aute irure dolor in reprehenderit in voluptate velit.',
+      'location': 'Hotel ABC',
+      'date': '10 November 2025',
+    },
+    {
+      'title': 'Title',
+      'description': 'Description duis aute irure dolor in reprehenderit in voluptate velit.',
+      'location': 'Hotel ABC',
+      'date': '10 November 2025',
+    },
+    {
+      'title': 'Title',
+      'description': 'Description duis aute irure dolor in reprehenderit in voluptate velit.',
+      'location': 'Hotel ABC',
+      'date': '10 November 2025',
+    },
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -51,45 +87,88 @@ class _HomePageState extends State<HomePage> {
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (context, snapshot) {
         final user = snapshot.data;
-        final username = user?.email?.split('@').first ?? '';
 
         return Scaffold(
-          appBar: AppBar(
-            title: const Text('Home'),
-            centerTitle: true,
-          ),
-          body: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text('Hello${user != null ? ' $username' : ''}!'),
-                const SizedBox(height: 24),
-                ElevatedButton(
-                  onPressed: () => _onButtonPressed(user, () {
-                    // Navigate to CreateEvent screen
-                  }),
-                  child: const Text('Create Event'),
-                ),
-                ElevatedButton(
-                  onPressed: () => _onButtonPressed(user, () {
-                    // Navigate to RSVPtoEvent screen
-                  }),
-                  child: const Text('RSVP to Event'),
-                ),
-                ElevatedButton(
-                  onPressed: () => _onButtonPressed(user, () {
-                    Navigator.pushNamed(context, 'profile_page');
-                  }),
-                  child: const Text('Profile'),
-                ),
-                ElevatedButton(
-                  onPressed: () => _onButtonPressed(user, () {
-                    FirebaseAuth.instance.signOut();
-                    Navigator.pushNamed(context, 'home');
-                  }),
-                  child: const Text("Logout")
-                )
-              ],
+          backgroundColor: const Color(0xFFF8F1FF),
+          body: SafeArea(
+            child: FutureBuilder<String>(
+              future: user != null ? firestoreProfile.getName(user.uid) : Future.value(''),
+              builder: (context, nameSnapshot) {
+                final username = nameSnapshot.data ?? '';
+
+                return SingleChildScrollView(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: 16),
+                      Center(
+                        child: Text(
+                          user != null
+                              ? 'Selamat Datang, $username'
+                              : 'Selamat Datang!',
+                          style: const TextStyle(fontSize: 18),
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      Center(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: const Color(0x556750A4),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                          child: Column(
+                            children: [
+                              const Text(
+                                'Buat Acaramu Sendiri!',
+                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                              ),
+                              const SizedBox(height: 8),
+                              ElevatedButton(
+                                onPressed: () => _handleBuatAcara(user),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color(0xFF6750A4),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                ),
+                                child: const Text('Buat Acara', style: TextStyle(color: Colors.white),),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      TextField(
+                        decoration: InputDecoration(
+                          hintText: 'Search Event',
+                          prefixIcon: const Icon(Icons.search),
+                          filled: true,
+                          fillColor: Colors.white,
+                          contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 20),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(16),
+                            borderSide: BorderSide.none,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 24),
+                      const Text(
+                        'Highlighted Events',
+                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 12),
+                      ...events.map((event) => EventCard(
+                            event: event,
+                            user: user,
+                            onDaftar: _handleDaftar,
+                          )),
+                      const SizedBox(height: 24),
+                    ],
+                  ),
+                );
+              },
             ),
           ),
         );
