@@ -1,7 +1,9 @@
 import 'package:event_kita_app/features/event_management/presentation/bloc/create_event/create_event_cubit.dart';
+import 'package:event_kita_app/features/event_management/presentation/screens/map_picker_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:event_kita_app/features/event_management/domain/entities/event_entity.dart';
 
 typedef EventFormSubmitCallback = void Function(Map<String, dynamic> eventData);
@@ -22,6 +24,7 @@ class _EventFormState extends State<EventForm> {
   late TextEditingController _descriptionController;
   late TextEditingController _locationAddressController;
   DateTime? _selectedDateTime;
+  LatLng? _selectedLatLng;
 
   @override
   void initState() {
@@ -36,6 +39,13 @@ class _EventFormState extends State<EventForm> {
       text: widget.initialEvent?.location.address ?? '',
     );
     _selectedDateTime = widget.initialEvent?.dateTime;
+
+    if (widget.initialEvent != null) {
+      _selectedLatLng = LatLng(
+        widget.initialEvent!.location.latitude,
+        widget.initialEvent!.location.longitude,
+      );
+    }
   }
 
   @override
@@ -44,6 +54,20 @@ class _EventFormState extends State<EventForm> {
     _descriptionController.dispose();
     _locationAddressController.dispose();
     super.dispose();
+  }
+
+  Future<void> _openMapPicker() async {
+    final result = await Navigator.push<LocationResult>(
+      context,
+      MaterialPageRoute(builder: (context) => const MapPickerPage()),
+    );
+
+    if (result != null) {
+      setState(() {
+        _selectedLatLng = result.latLng;
+        _locationAddressController.text = result.address;
+      });
+    }
   }
 
   Future<void> _selectDateTime(BuildContext context) async {
@@ -86,11 +110,23 @@ class _EventFormState extends State<EventForm> {
         return;
       }
 
+      if (_selectedLatLng == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Harap pilih lokasi dari peta.'),
+            backgroundColor: Colors.orange,
+          ),
+        );
+        return;
+      }
+
       final eventData = {
         'title': _titleController.text,
         'description': _descriptionController.text,
         'dateTime': _selectedDateTime!,
         'location_address': _locationAddressController.text,
+        'latitude': _selectedLatLng!.latitude,
+        'longitude': _selectedLatLng!.longitude,
       };
       widget.onSubmit(eventData);
     }
@@ -132,15 +168,21 @@ class _EventFormState extends State<EventForm> {
           const SizedBox(height: 16),
           TextFormField(
             controller: _locationAddressController,
-            decoration: const InputDecoration(
+            readOnly: true,
+            decoration: InputDecoration(
               labelText: 'Alamat Lokasi',
-              border: OutlineInputBorder(),
+              border: const OutlineInputBorder(),
+              suffixIcon: IconButton(
+                icon: const Icon(Icons.map_outlined),
+                onPressed: _openMapPicker,
+              ),
             ),
             validator:
                 (value) =>
                     (value == null || value.isEmpty)
                         ? 'Alamat lokasi tidak boleh kosong.'
                         : null,
+            onTap: _openMapPicker,
           ),
           const SizedBox(height: 16),
           Container(
@@ -160,7 +202,7 @@ class _EventFormState extends State<EventForm> {
                     _selectedDateTime == null
                         ? 'Pilih Tanggal & Waktu'
                         : DateFormat(
-                          'dd MMM yyyy, HH:mm',
+                          'dd MMM yy, HH:mm',
                           'id_ID',
                         ).format(_selectedDateTime!),
                     style: const TextStyle(fontSize: 16),
