@@ -10,7 +10,7 @@ class EventModel {
   final LocationModel location;
   final int? capacity;
   final String? category;
-  final String? imageUrl;
+  final String? bannerImageUrl;
   final Timestamp createdAt;
   final Timestamp updatedAt;
 
@@ -23,7 +23,7 @@ class EventModel {
     required this.location,
     this.capacity,
     this.category,
-    this.imageUrl,
+    this.bannerImageUrl,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -36,10 +36,12 @@ class EventModel {
       title: data['title'] as String,
       description: data['description'] as String,
       dateTime: data['dateTime'] as Timestamp,
-      location: LocationModel.fromJson(data['location'] as Map<String, dynamic>),
+      location: LocationModel.fromJson(
+        data['location'] as Map<String, dynamic>,
+      ),
       capacity: data['capacity'] as int?,
       category: data['category'] as String?,
-      imageUrl: data['imageUrl'] as String?,
+      bannerImageUrl: data['bannerImageUrl'] as String?,
       createdAt: data['createdAt'] as Timestamp,
       updatedAt: data['updatedAt'] as Timestamp,
     );
@@ -47,7 +49,6 @@ class EventModel {
 
   Map<String, dynamic> toMap() {
     return {
-      'id': id,
       'creatorId': creatorId,
       'title': title,
       'description': description,
@@ -55,7 +56,7 @@ class EventModel {
       'location': location.toJson(),
       'capacity': capacity,
       'category': category,
-      'imageUrl': imageUrl,
+      'bannerImageUrl': bannerImageUrl,
       'createdAt': createdAt,
       'updatedAt': updatedAt,
     };
