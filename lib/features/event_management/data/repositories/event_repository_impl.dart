@@ -9,9 +9,9 @@ import 'package:event_kita_app/features/event_management/domain/entities/locatio
 import 'package:event_kita_app/features/event_management/domain/repositories/event_repository.dart';
 
 class EventRepositoryImpl implements EventRepository {
-  final EventRemoteDatasource remoteDatasource;
+  final EventRemoteDatasource remoteDataSource;
 
-  EventRepositoryImpl({required this.remoteDatasource});
+  EventRepositoryImpl({required this.remoteDataSource});
 
   EventModel _mapEntityToModel(EventEntity entity) => EventModel(
     id: entity.id,
@@ -22,7 +22,7 @@ class EventRepositoryImpl implements EventRepository {
     location: LocationModel(
       address: entity.location.address,
       latitude: entity.location.latitude,
-      longitude: entity.location.longitude
+      longitude: entity.location.longitude,
     ),
     capacity: entity.capacity,
     category: entity.category,
@@ -53,7 +53,7 @@ class EventRepositoryImpl implements EventRepository {
   Future<Either<Failure, void>> createEvent(EventEntity event) async {
     try {
       final eventModel = _mapEntityToModel(event);
-      await remoteDatasource.createEvent(eventModel);
+      await remoteDataSource.createEvent(eventModel);
       return const Right(null);
     } on Exception catch (e) {
       return Left(ServerFailure(e.toString()));
@@ -64,7 +64,7 @@ class EventRepositoryImpl implements EventRepository {
   Future<Either<Failure, void>> updateEvent(EventEntity event) async {
     try {
       final eventModel = _mapEntityToModel(event);
-      await remoteDatasource.updateEvent(eventModel);
+      await remoteDataSource.updateEvent(eventModel);
       return const Right(null);
     } on Exception catch (e) {
       return Left(ServerFailure(e.toString()));
@@ -74,7 +74,7 @@ class EventRepositoryImpl implements EventRepository {
   @override
   Future<Either<Failure, void>> deleteEvent(String eventId) async {
     try {
-      await remoteDatasource.deleteEvent(eventId);
+      await remoteDataSource.deleteEvent(eventId);
       return const Right(null);
     } on Exception catch (e) {
       return Left(ServerFailure(e.toString()));
@@ -82,14 +82,16 @@ class EventRepositoryImpl implements EventRepository {
   }
 
   @override
-  Future<Either<Failure, List<EventEntity>>> getMyEvents(String creatorId) async {
+  Future<Either<Failure, List<EventEntity>>> getMyEvents(
+    String creatorId,
+  ) async {
     try {
-      final eventModels = await remoteDatasource.getMyEvents(creatorId);
-      final eventEntities = eventModels.map((model) => _mapModelToEntity(model)).toList();
+      final eventModels = await remoteDataSource.getMyEvents(creatorId);
+      final eventEntities =
+          eventModels.map((model) => _mapModelToEntity(model)).toList();
       return Right(eventEntities);
     } on Exception catch (e) {
       return Left(ServerFailure(e.toString()));
     }
   }
-
 }
