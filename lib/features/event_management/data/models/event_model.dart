@@ -10,7 +10,7 @@ class EventModel {
   final LocationModel location;
   final int? capacity;
   final String? category;
-  final String? bannerImageUrl;
+  final String? imageUrl;
   final Timestamp createdAt;
   final Timestamp updatedAt;
 
@@ -23,7 +23,7 @@ class EventModel {
     required this.location,
     this.capacity,
     this.category,
-    this.bannerImageUrl,
+    this.imageUrl,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -41,7 +41,7 @@ class EventModel {
       ),
       capacity: data['capacity'] as int?,
       category: data['category'] as String?,
-      bannerImageUrl: data['bannerImageUrl'] as String?,
+      imageUrl: data['bannerImageUrl'] as String?,
       createdAt: data['createdAt'] as Timestamp,
       updatedAt: data['updatedAt'] as Timestamp,
     );
@@ -56,7 +56,7 @@ class EventModel {
       'location': location.toJson(),
       'capacity': capacity,
       'category': category,
-      'bannerImageUrl': bannerImageUrl,
+      'bannerImageUrl': imageUrl,
       'createdAt': createdAt,
       'updatedAt': updatedAt,
     };
