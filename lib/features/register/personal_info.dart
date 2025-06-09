@@ -248,7 +248,7 @@ class _PersonalInfoState extends State<PersonalInfo> {
                       },
                       decoration: _inputDecoration(
                         labelText: 'Gender',
-                        hintText: 'Dropdown', // This hint might be overridden by selected value
+                        hintText: 'Gender', // This hint might be overridden by selected value
                         selectedValue: _selectedGender,
                         onClear: () {
                            setState(() {

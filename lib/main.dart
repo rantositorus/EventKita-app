@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'screens/homepage.dart';
 import 'features/register/register_screen.dart';
 import 'screens/profile_page.dart';
+import 'screens/search.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 
@@ -30,6 +31,7 @@ class MyApp extends StatelessWidget {
         'home': (context) => const MyHomePage(),
         'register': (context) => const RegisterScreen(),
         'profile_page': (context) => const ProfilePage(),
+        'search' : (context) => const SearchPage(),
       },
       debugShowCheckedModeBanner: false,
     );
@@ -48,7 +50,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   final List<Widget> _pages = [
     const HomePage(),
-    const Placeholder(), // Placeholder for second page
+    const SearchPage(), // Placeholder for second page
     const ProfilePage()
   ];
 
@@ -69,10 +71,10 @@ class _MyHomePageState extends State<MyHomePage> {
       body: _pages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         items: const [
-              BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-              BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Search'),
-              BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
-            ],
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Search'),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
+        ],
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
       ),
