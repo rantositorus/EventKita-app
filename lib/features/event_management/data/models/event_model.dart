@@ -12,7 +12,7 @@ class EventModel {
   final String? category;
   final String? imageUrl;
   final Timestamp createdAt;
-  final Timestamp? updatedAt;
+  final Timestamp updatedAt;
 
   EventModel({
     required this.id,
@@ -41,7 +41,7 @@ class EventModel {
       category: data['category'] as String?,
       imageUrl: data['imageUrl'] as String?,
       createdAt: data['createdAt'] as Timestamp,
-      updatedAt: data['updatedAt'] as Timestamp?,
+      updatedAt: data['updatedAt'] as Timestamp,
     );
   }
 

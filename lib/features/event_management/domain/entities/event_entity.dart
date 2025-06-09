@@ -12,7 +12,7 @@ class EventEntity extends Equatable {
   final String? category;
   final String? imageUrl;
   final DateTime createdAt;
-  final DateTime? updatedAt;
+  final DateTime updatedAt;
 
   const EventEntity({
     required this.id,
@@ -25,7 +25,7 @@ class EventEntity extends Equatable {
     this.category,
     this.imageUrl,
     required this.createdAt,
-    this.updatedAt,
+    required this.updatedAt,
   });
 
   @override
