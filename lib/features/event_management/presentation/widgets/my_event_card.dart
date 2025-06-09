@@ -53,13 +53,14 @@ class MyEventCard extends StatelessWidget {
               width: double.infinity,
               fit: BoxFit.cover,
               errorBuilder:
-                  (_, __, ___) => Container(
+                  (context, error, StackTrace) => Container(
                     height: 180,
                     color: Colors.grey[300],
                     child: const Center(
                       child: Icon(
                         Icons.image_not_supported,
                         color: Colors.grey,
+                        size: 50,
                       ),
                     ),
                   ),
@@ -69,6 +70,25 @@ class MyEventCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                if (event.category != null && event.category!.isNotEmpty)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 8.0),
+                    child: Chip(
+                      label: Text(event.category!),
+                      labelStyle: TextStyle(
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                      backgroundColor: Theme.of(
+                        context,
+                      ).colorScheme.primary.withOpacity(0.1),
+                      side: BorderSide(
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.primary.withOpacity(0.3),
+                      ),
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                    ),
+                  ),
                 Text(
                   event.title,
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
@@ -92,7 +112,7 @@ class MyEventCard extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: 8),
                 Row(
                   children: [
                     const Icon(Icons.location_on, size: 16, color: Colors.grey),
@@ -104,20 +124,33 @@ class MyEventCard extends StatelessWidget {
                         maxLines: 1,
                       ),
                     ),
-                    const SizedBox(height: 8),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
+                  ],
+                ),
+                if (event.capacity != null && event.capacity! > 0)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8.0),
+                    child: Row(
                       children: [
-                        TextButton(onPressed: () {}, child: const Text('Edit')),
+                        const Icon(Icons.people, size: 16, color: Colors.grey),
                         const SizedBox(width: 8),
-                        TextButton(
-                          style: TextButton.styleFrom(
-                            foregroundColor: Colors.red,
-                          ),
-                          onPressed: () => _showDeleteConfirmation(context),
-                          child: const Text('Hapus'),
+                        Text(
+                          '${event.capacity} peserta',
+                          style: Theme.of(context).textTheme.bodyMedium,
                         ),
                       ],
+                    ),
+                  ),
+
+                const Divider(height: 24),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton(onPressed: () {}, child: const Text('Edit')),
+                    const SizedBox(width: 8),
+                    TextButton(
+                      style: TextButton.styleFrom(foregroundColor: Colors.red),
+                      onPressed: () => _showDeleteConfirmation(context),
+                      child: const Text('Hapus'),
                     ),
                   ],
                 ),

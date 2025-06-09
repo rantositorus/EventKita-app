@@ -1,6 +1,7 @@
 import 'package:event_kita_app/features/event_management/presentation/bloc/create_event/create_event_cubit.dart';
 import 'package:event_kita_app/features/event_management/presentation/screens/map_picker_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:latlong2/latlong.dart';
@@ -23,6 +24,17 @@ class _EventFormState extends State<EventForm> {
   late TextEditingController _titleController;
   late TextEditingController _descriptionController;
   late TextEditingController _locationAddressController;
+  late TextEditingController _capacityController;
+  late TextEditingController _imageUrlController;
+  String? _selectedCategory;
+  final List<String> _categories = [
+    'Teknologi',
+    'Musik',
+    'Olahraga',
+    'Kesenian',
+    'Komunitas',
+    'Lainnya',
+  ];
   DateTime? _selectedDateTime;
   LatLng? _selectedLatLng;
 
@@ -46,6 +58,16 @@ class _EventFormState extends State<EventForm> {
         widget.initialEvent!.location.longitude,
       );
     }
+
+    _capacityController = TextEditingController(
+      text: widget.initialEvent?.capacity?.toString() ?? '',
+    );
+
+    _imageUrlController = TextEditingController(
+      text: widget.initialEvent?.imageUrl ?? '',
+    );
+
+    _selectedCategory = widget.initialEvent?.category;
   }
 
   @override
@@ -53,6 +75,8 @@ class _EventFormState extends State<EventForm> {
     _titleController.dispose();
     _descriptionController.dispose();
     _locationAddressController.dispose();
+    _capacityController.dispose();
+    _imageUrlController.dispose();
     super.dispose();
   }
 
@@ -124,10 +148,15 @@ class _EventFormState extends State<EventForm> {
         'title': _titleController.text,
         'description': _descriptionController.text,
         'dateTime': _selectedDateTime!,
+        'capacity': int.tryParse(_capacityController.text) ?? 0,
+        'category': _selectedCategory,
+        'imageUrl': _imageUrlController.text,
         'location_address': _locationAddressController.text,
         'latitude': _selectedLatLng!.latitude,
         'longitude': _selectedLatLng!.longitude,
       };
+      print('Data yang akan dikirim: $eventData');
+
       widget.onSubmit(eventData);
     }
   }
@@ -166,6 +195,65 @@ class _EventFormState extends State<EventForm> {
                         : null,
           ),
           const SizedBox(height: 16),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Input Kapasitas
+              Expanded(
+                flex: 2,
+                child: TextFormField(
+                  controller: _capacityController,
+                  decoration: const InputDecoration(
+                    labelText: 'Kapasitas',
+                    border: OutlineInputBorder(),
+                  ),
+                  keyboardType: TextInputType.number,
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly,
+                  ], // Hanya izinkan angka
+                ),
+              ),
+              const SizedBox(width: 16),
+              // Input Kategori
+              Expanded(
+                flex: 3,
+                child: DropdownButtonFormField<String>(
+                  value: _selectedCategory,
+                  decoration: const InputDecoration(
+                    labelText: 'Kategori',
+                    border: OutlineInputBorder(),
+                  ),
+                  items:
+                      _categories.map((String category) {
+                        return DropdownMenuItem<String>(
+                          value: category,
+                          child: Text(category),
+                        );
+                      }).toList(),
+                  onChanged: (newValue) {
+                    setState(() {
+                      _selectedCategory = newValue;
+                    });
+                  },
+                  validator:
+                      (value) =>
+                          (value == null || value.isEmpty)
+                              ? 'Pilih kategori'
+                              : null,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          // Input URL Gambar
+          TextFormField(
+            controller: _imageUrlController,
+            decoration: const InputDecoration(
+              labelText: 'URL Gambar Banner',
+              border: OutlineInputBorder(),
+            ),
+            keyboardType: TextInputType.url,
+          ),
           TextFormField(
             controller: _locationAddressController,
             readOnly: true,

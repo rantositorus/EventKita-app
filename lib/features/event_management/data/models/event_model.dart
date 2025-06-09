@@ -41,7 +41,7 @@ class EventModel {
       ),
       capacity: data['capacity'] as int?,
       category: data['category'] as String?,
-      imageUrl: data['bannerImageUrl'] as String?,
+      imageUrl: data['imageUrl'] as String?,
       createdAt: data['createdAt'] as Timestamp,
       updatedAt: data['updatedAt'] as Timestamp,
     );
@@ -56,7 +56,7 @@ class EventModel {
       'location': location.toJson(),
       'capacity': capacity,
       'category': category,
-      'bannerImageUrl': imageUrl,
+      'imageUrl': imageUrl,
       'createdAt': createdAt,
       'updatedAt': updatedAt,
     };

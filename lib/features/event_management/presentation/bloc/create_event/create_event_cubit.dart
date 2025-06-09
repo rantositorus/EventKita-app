@@ -15,6 +15,7 @@ class CreateEventCubit extends Cubit<CreateEventState> {
     : super(CreateEventInitial());
 
   Future<void> submitCreateEvent(Map<String, dynamic> eventData) async {
+    print('Data yang diterima: $eventData');
     emit(CreateEventLoading());
     try {
       final now = DateTime.now();
@@ -27,10 +28,13 @@ class CreateEventCubit extends Cubit<CreateEventState> {
         location: LocationEntity(
           latitude: eventData['latitude'] ?? 0.0,
           longitude: eventData['longitude'] ?? 0.0,
-          address: eventData['address'] ?? 'Event Address',
+          address: eventData['location_address'] ?? 'Event Address',
         ),
         createdAt: now,
         updatedAt: now,
+        capacity: eventData['capacity'],
+        category: eventData['category'],
+        imageUrl: eventData['imageUrl'],
       );
 
       final failureOrSuccess = await createEventUseCase(event);
