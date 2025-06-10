@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:event_kita_app/features/event_management/presentation/bloc/update_event/update_event_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -68,6 +69,14 @@ class MyApp extends StatelessWidget {
 
               return CreateEventCubit(
                 createEventUseCase: CreateEvent(eventRepository),
+              );
+            },
+          ),
+          BlocProvider<UpdateEventCubit>(
+            create: (context) {
+              final eventRepository = context.read<EventRepository>();
+              return UpdateEventCubit(
+                updateEventUseCase: UpdateEvent(eventRepository),
               );
             },
           ),

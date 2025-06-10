@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:event_kita_app/features/event_management/domain/entities/event_entity.dart';
 import 'package:event_kita_app/features/event_management/presentation/bloc/my_events_list/my_events_list_cubit.dart';
+import 'package:event_kita_app/features/event_management/presentation/screens/update_event_page.dart';
 
 class MyEventCard extends StatelessWidget {
   final EventEntity event;
@@ -145,7 +146,17 @@ class MyEventCard extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    TextButton(onPressed: () {}, child: const Text('Edit')),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => UpdateEventPage(event: event),
+                          ),
+                        );
+                      },
+                      child: const Text('Edit'),
+                    ),
                     const SizedBox(width: 8),
                     TextButton(
                       style: TextButton.styleFrom(foregroundColor: Colors.red),
