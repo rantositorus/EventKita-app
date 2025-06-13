@@ -50,7 +50,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   final List<Widget> _pages = [
     const HomePage(),
-    const SearchPage(), // Placeholder for second page
+    const SearchPage(),
+    const Placeholder(),
     const ProfilePage()
   ];
 
@@ -71,9 +72,10 @@ class _MyHomePageState extends State<MyHomePage> {
       body: _pages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Search'),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home', backgroundColor: Color(0xFF6750A4)),
+          BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Search', backgroundColor: Color(0xFF6750A4)),
+          BottomNavigationBarItem(icon: Icon(Icons.event), label: 'My Events', backgroundColor: Color(0xFF6750A4)),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile', backgroundColor: Color(0xFF6750A4)),
         ],
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,

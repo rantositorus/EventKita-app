@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../assets/components/event_card.dart';
 import '../services/firestore_profile.dart';
+import '../services/firestore_events.dart';
+
+final FirestoreEvents firestoreEvents = FirestoreEvents();
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -53,33 +56,6 @@ class _HomePageState extends State<HomePage> {
       // Navigator.pushNamed(context, 'rsvp_event');
     }
   }
-
-  final List<Map<String, String>> events = const [
-    {
-      'title': 'Title',
-      'description': 'Description duis aute irure dolor in reprehenderit in voluptate velit.',
-      'location': 'Hotel ABC',
-      'date': '10 November 2025',
-    },
-    {
-      'title': 'Title',
-      'description': 'Description duis aute irure dolor in reprehenderit in voluptate velit.',
-      'location': 'Hotel ABC',
-      'date': '10 November 2025',
-    },
-    {
-      'title': 'Title',
-      'description': 'Description duis aute irure dolor in reprehenderit in voluptate velit.',
-      'location': 'Hotel ABC',
-      'date': '10 November 2025',
-    },
-    {
-      'title': 'Title',
-      'description': 'Description duis aute irure dolor in reprehenderit in voluptate velit.',
-      'location': 'Hotel ABC',
-      'date': '10 November 2025',
-    },
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -148,11 +124,28 @@ class _HomePageState extends State<HomePage> {
                         style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(height: 12),
-                      ...events.map((event) => EventCard(
-                        event: event,
-                        user: user,
-                        onDaftar: _handleDaftar,
-                      )),
+                      FutureBuilder(
+                        future: firestoreEvents.getTop3Events(),
+                        builder: (context, eventsSnapshot){
+                          if (eventsSnapshot.connectionState == ConnectionState.waiting) {
+                            return const Center(child: CircularProgressIndicator());
+                          }
+                          if (eventsSnapshot.hasError) {
+                            return Center(child: Text('Error: ${eventsSnapshot.error}'));
+                          }
+                          final events = eventsSnapshot.data ?? [];
+                          if (events.isEmpty) {
+                            return const Center(child: Text('No events found.'));
+                          }
+                          return Column(
+                            children: events.map((event) => EventCard(
+                              event: event,
+                              user: user,
+                              onDaftar: _handleDaftar,
+                            )).toList(),
+                          );
+                        },
+                      ),
                       const SizedBox(height: 24),
                     ],
                   ),

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../assets/components/event_card.dart';
+import '../services/firestore_events.dart';
+
+final FirestoreEvents firestoreEvents = FirestoreEvents();
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
@@ -13,37 +16,6 @@ class _SearchPageState extends State<SearchPage> {
   final User? user = FirebaseAuth.instance.currentUser;
   final TextEditingController searchController = TextEditingController();
   String searchQuery = '';
-
-  final List<Map<String, String>> allEvents = const [
-    {
-      'title': 'Title',
-      'description': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-      'location': 'Hotel ABC',
-      'date': '10 November 2025',
-    },
-    {
-      'title': 'Another Event',
-      'description': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-      'location': 'Hotel XYZ',
-      'date': '15 November 2025',
-    },
-    {
-      'title': 'Test',
-      'description': 'Test.',
-      'location': 'Test Park',
-      'date': '18 November 2025',
-    },
-  ];
-
-  List<Map<String, String>> get filteredEvents {
-    if (searchQuery.isEmpty) return allEvents;
-    return allEvents.where((event) {
-      final title = event['title']!.toLowerCase();
-      final description = event['description']!.toLowerCase();
-      return title.contains(searchQuery.toLowerCase()) ||
-          description.contains(searchQuery.toLowerCase());
-    }).toList();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -75,22 +47,43 @@ class _SearchPageState extends State<SearchPage> {
                 ),
               ),
               const SizedBox(height: 16),
-              Column(
-                children: filteredEvents.map((event) {
-                  return EventCard(
-                    event: event,
-                    user: user,
-                    onDaftar: (user) {
-                      if (user != null) {
-                        print('User ${user.email} registered for ${event['title']}');
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Please log in to register')),
-                        );
-                      }
-                    },
+              FutureBuilder(
+                future: firestoreEvents.getEvents(),
+                builder: (context, eventsSnapshot) {
+                  if (eventsSnapshot.connectionState == ConnectionState.waiting){
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  if (eventsSnapshot.hasError) {
+                    return Center(child: Text("Error: ${eventsSnapshot.error}"));
+                  }
+                  final events = eventsSnapshot.data ?? [];
+                  if (events.isEmpty) {
+                    return const Center(child: Text("No events found."));
+                  }
+                  final filteredEvents = events.where((event) {
+                    final title = event['title']!.toLowerCase();
+                    final description = event['description']!.toLowerCase();
+                    return title.contains(searchQuery.toLowerCase()) ||
+                        description.contains(searchQuery.toLowerCase());
+                  }).toList();
+                  return Column(
+                    children: filteredEvents.map<Widget>((event) {
+                      return EventCard(
+                        event: event,
+                        user: user,
+                        onDaftar: (user) {
+                          if (user != null) {
+                            print('User ${user.email} registered for ${event['title']}');
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Please log in to register')),
+                            );
+                          }
+                        },
+                      );
+                    }).toList(),
                   );
-                }).toList(),
+                }
               ),
             ],
           ),
