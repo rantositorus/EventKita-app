@@ -1,26 +1,25 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:event_kita_app/features/event_management/presentation/bloc/update_event/update_event_cubit.dart';
 import 'package:flutter/material.dart';
+
+import 'screens/homepage.dart';
+import 'features/register/register_screen.dart';
+import 'screens/profile_page.dart';
+import 'screens/search.dart';
+import 'screens/myrsvp_page.dart';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
-// Import barrel file dari fiturmu
 import 'features/event_management/event_management.dart';
 
-// Jika kamu menggunakan flutterfire_cli, uncomment baris ini
-// import 'firebase_options.dart';
 
 void main() async {
-  // Pastikan Flutter sudah siap sebelum menjalankan kode async
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Inisialisasi Firebase
-  await Firebase.initializeApp(
-    // options: DefaultFirebaseOptions.currentPlatform, // Uncomment jika pakai flutterfire_cli
-  );
+  await Firebase.initializeApp();
 
-  // Inisialisasi format tanggal Indonesia untuk paket intl
   await initializeDateFormatting('id_ID', null);
 
   runApp(const MyApp());
@@ -31,44 +30,33 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // 1. Menyediakan semua Repository di level tertinggi
     return MultiRepositoryProvider(
       providers: [
         RepositoryProvider<EventRepository>(
-          create:
-              (context) => EventRepositoryImpl(
-                remoteDataSource: EventRemoteDataSourceImpl(
-                  firestore:
-                      FirebaseFirestore.instance, // Datasource butuh Firestore
-                ),
-              ),
+          create: (context) => EventRepositoryImpl(
+            remoteDataSource: EventRemoteDataSourceImpl(
+              firestore:
+                  FirebaseFirestore.instance,
+            ),
+          ),
         ),
       ],
       child: MultiBlocProvider(
         providers: [
-          // 2. Menyediakan Cubit untuk daftar acara
           BlocProvider<MyEventsListCubit>(
             create: (context) {
-              // Saat membuat MyEventsListCubit, kita ambil EventRepository
-              // yang sudah disediakan di atas menggunakan context.read<T>()
               final eventRepository = context.read<EventRepository>();
-
-              // Berikan 'bahan' yang dibutuhkan oleh Cubit, yaitu Usecase.
-              // Usecase sendiri dibuat dengan menggunakan repository.
               return MyEventsListCubit(
-                getMyEventsUseCase: GetMyEvents(eventRepository),
-                deleteEventUseCase: DeleteEvent(eventRepository),
-              )..fetchMyEvents(); // Langsung panggil fetchMyEvents saat Cubit dibuat
+                getMyEventsUsecase: GetMyEvents(eventRepository),
+                deleteEventUsecase: DeleteEvent(eventRepository),
+              )..fetchMyEvents();
             },
           ),
-          // 3. Menyediakan Cubit untuk form pembuatan acara
           BlocProvider<CreateEventCubit>(
             create: (context) {
-              // Prosesnya sama seperti di atas
               final eventRepository = context.read<EventRepository>();
-
               return CreateEventCubit(
-                createEventUseCase: CreateEvent(eventRepository),
+                createEventUsecase: CreateEvent(eventRepository),
               );
             },
           ),
@@ -76,7 +64,7 @@ class MyApp extends StatelessWidget {
             create: (context) {
               final eventRepository = context.read<EventRepository>();
               return UpdateEventCubit(
-                updateEventUseCase: UpdateEvent(eventRepository),
+                updateEventUsecase: UpdateEvent(eventRepository),
               );
             },
           ),
@@ -101,8 +89,64 @@ class MyApp extends StatelessWidget {
               ),
             ),
           ),
-          home: const MyEventsPage(),
+          home: const MyHomePage(),
+          routes: {
+            'home': (context) => const MyHomePage(),
+            'register': (context) => const RegisterScreen(),
+            'profile_page': (context) => const ProfilePage(),
+            'search': (context) => const SearchPage(),
+            'my-rsvp': (context) => const MyRSVPPage(),
+            'my-events': (context) => const MyEventsPage(), 
+          },
+          debugShowCheckedModeBanner: false,
         ),
+      ),
+    );
+  }
+}
+
+class MyHomePage extends StatefulWidget {
+  const MyHomePage({super.key});
+
+  @override
+  State<MyHomePage> createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  int _selectedIndex = 0;
+
+  final List<Widget> _pages = [
+    const HomePage(),
+    const SearchPage(),
+    const MyEventsPage(),
+    const ProfilePage()
+  ];
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: IndexedStack(
+        index: _selectedIndex,
+        children: _pages,
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Search'),
+          BottomNavigationBarItem(icon: Icon(Icons.event_note), label: 'My Events'),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
+        ],
+        currentIndex: _selectedIndex,
+        onTap: _onItemTapped,
+        selectedItemColor: Colors.orange,
+        unselectedItemColor: Colors.grey,
       ),
     );
   }
