@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../assets/components/event_card.dart';
+import '../screens/event_detail_page.dart';
+import '../screens/myrsvp_page.dart';
 import '../services/firestore_profile.dart';
+import '../services/firestore_events.dart';
+
+final FirestoreEvents firestoreEvents = FirestoreEvents();
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -21,9 +26,7 @@ class _HomePageState extends State<HomePage> {
         content: const Text('Please login or register to continue.'),
         actions: [
           TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
+            onPressed: () => Navigator.of(context).pop(),
             child: const Text('Login'),
           ),
           TextButton(
@@ -54,32 +57,16 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  final List<Map<String, String>> events = const [
-    {
-      'title': 'Title',
-      'description': 'Description duis aute irure dolor in reprehenderit in voluptate velit.',
-      'location': 'Hotel ABC',
-      'date': '10 November 2025',
-    },
-    {
-      'title': 'Title',
-      'description': 'Description duis aute irure dolor in reprehenderit in voluptate velit.',
-      'location': 'Hotel ABC',
-      'date': '10 November 2025',
-    },
-    {
-      'title': 'Title',
-      'description': 'Description duis aute irure dolor in reprehenderit in voluptate velit.',
-      'location': 'Hotel ABC',
-      'date': '10 November 2025',
-    },
-    {
-      'title': 'Title',
-      'description': 'Description duis aute irure dolor in reprehenderit in voluptate velit.',
-      'location': 'Hotel ABC',
-      'date': '10 November 2025',
-    },
-  ];
+  void _goToMyRSVPs(User? user) {
+    if (user == null) {
+      _showLoginDialog();
+    } else {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const MyRSVPPage()),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -92,7 +79,9 @@ class _HomePageState extends State<HomePage> {
           backgroundColor: const Color(0xFFF8F1FF),
           body: SafeArea(
             child: FutureBuilder<String>(
-              future: user != null ? firestoreProfile.getName(user.uid) : Future.value(''),
+              future: user != null
+                  ? firestoreProfile.getName(user.uid)
+                  : Future.value(''),
               builder: (context, nameSnapshot) {
                 final username = nameSnapshot.data ?? '';
 
@@ -117,12 +106,14 @@ class _HomePageState extends State<HomePage> {
                             color: const Color(0x556750A4),
                             borderRadius: BorderRadius.circular(20),
                           ),
-                          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 24, vertical: 16),
                           child: Column(
                             children: [
                               const Text(
                                 'Buat Acaramu Sendiri!',
-                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 16),
                               ),
                               const SizedBox(height: 8),
                               ElevatedButton(
@@ -138,6 +129,20 @@ class _HomePageState extends State<HomePage> {
                                   style: TextStyle(color: Colors.white),
                                 ),
                               ),
+                              const SizedBox(height: 8),
+                              ElevatedButton(
+                                onPressed: () => _goToMyRSVPs(user),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.teal,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                ),
+                                child: const Text(
+                                  'Lihat RSVP Saya',
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ),
                             ],
                           ),
                         ),
@@ -145,14 +150,46 @@ class _HomePageState extends State<HomePage> {
                       const SizedBox(height: 24),
                       const Text(
                         'Highlighted Events',
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(height: 12),
-                      ...events.map((event) => EventCard(
-                        event: event,
-                        user: user,
-                        onDaftar: _handleDaftar,
-                      )),
+                      FutureBuilder(
+                        future: firestoreEvents.getTop3Events(),
+                        builder: (context, eventsSnapshot) {
+                          if (eventsSnapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Center(
+                                child: CircularProgressIndicator());
+                          }
+                          if (eventsSnapshot.hasError) {
+                            return Center(
+                                child: Text('Error: ${eventsSnapshot.error}'));
+                          }
+                          final events = eventsSnapshot.data ?? [];
+                          if (events.isEmpty) {
+                            return const Center(
+                                child: Text('No events found.'));
+                          }
+                          return Column(
+                            children: events
+                                .map((event) => EventCard(
+                              event: event,
+                              user: user,
+                              onDetails: (ctx, user) {
+                                Navigator.push(
+                                  ctx,
+                                  MaterialPageRoute(
+                                    builder: (ctx) =>
+                                        EventDetailPage(event: event),
+                                  ),
+                                );
+                              },
+                            ))
+                                .toList(),
+                          );
+                        },
+                      ),
                       const SizedBox(height: 24),
                     ],
                   ),

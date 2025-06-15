@@ -3,6 +3,7 @@ import 'screens/homepage.dart';
 import 'features/register/register_screen.dart';
 import 'screens/profile_page.dart';
 import 'screens/search.dart';
+import 'screens/myrsvp_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 
@@ -17,7 +18,6 @@ void main() async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -32,6 +32,7 @@ class MyApp extends StatelessWidget {
         'register': (context) => const RegisterScreen(),
         'profile_page': (context) => const ProfilePage(),
         'search' : (context) => const SearchPage(),
+        'my-rsvp': (context) => const MyRSVPPage(),
       },
       debugShowCheckedModeBanner: false,
     );
@@ -50,7 +51,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   final List<Widget> _pages = [
     const HomePage(),
-    const SearchPage(), // Placeholder for second page
+    const SearchPage(),
     const ProfilePage()
   ];
 
