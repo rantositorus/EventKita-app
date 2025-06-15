@@ -6,6 +6,7 @@ import 'features/register/register_screen.dart';
 import 'screens/profile_page.dart';
 import 'screens/search.dart';
 import 'screens/myrsvp_page.dart';
+import 'features/login/login_screen.dart';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -70,16 +71,19 @@ class MyApp extends StatelessWidget {
         child: MaterialApp(
           title: 'EventKita',
           theme: ThemeData(
-            colorScheme: ColorScheme.fromSeed(seedColor: Colors.orange),
+            colorScheme: ColorScheme.fromSeed(
+              seedColor: Colors.deepPurple,
+              brightness: Brightness.light,
+            ),
             useMaterial3: true,
             appBarTheme: const AppBarTheme(
-              backgroundColor: Colors.orange,
+              backgroundColor: Colors.deepPurple,
               foregroundColor: Colors.white,
               elevation: 2,
             ),
             elevatedButtonTheme: ElevatedButtonThemeData(
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.orange,
+                backgroundColor: Colors.deepPurple,
                 foregroundColor: Colors.white,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
@@ -91,6 +95,7 @@ class MyApp extends StatelessWidget {
           routes: {
             'home': (context) => const MyHomePage(),
             'register': (context) => const RegisterScreen(),
+            'login': (context) => const LoginPage(),
             'profile_page': (context) => const ProfilePage(),
             'search': (context) => const SearchPage(),
             'my-rsvp': (context) => const MyRSVPPage(),

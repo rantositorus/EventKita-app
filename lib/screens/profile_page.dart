@@ -70,7 +70,10 @@ class _ProfilePageState extends State<ProfilePage> {
                 borderRadius: BorderRadius.circular(8.0),
                 borderSide: BorderSide(color: Colors.grey.shade300),
               ),
-              contentPadding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 12.0),
+              contentPadding: const EdgeInsets.symmetric(
+                vertical: 14.0,
+                horizontal: 12.0,
+              ),
             ),
             obscureText: isPassword, // Handle password visibility
             onChanged: (value) {
@@ -106,43 +109,47 @@ class _ProfilePageState extends State<ProfilePage> {
                 children: [
                   const Text(
                     'You Are Not Logged In',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 24),
                   ElevatedButton(
                     onPressed: () {
-                      // INI PLACEHOLDER DULU, GANTI LOGIN SCREEN
-                      // TO DO: GANTI DENGAN LOGIN SCREEN
-                      FirebaseAuth.instance.signInWithEmailAndPassword(email: "tes@gmail.com", password: "123456789");
-                    } ,
+                      Navigator.pushNamed(context, 'login');
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Color(0xFF6750A4),
-                      padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 12),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 25,
+                        vertical: 12,
+                      ),
                     ),
-                    child: const Text('Login', style: TextStyle(fontSize: 18, color: Colors.white)),
+                    child: const Text(
+                      'Login',
+                      style: TextStyle(fontSize: 18, color: Colors.white),
+                    ),
                   ),
                   const SizedBox(height: 12),
-                  const Text(
-                    'or',
-                    style: TextStyle(fontSize: 16),
-                  ),
+                  const Text('or', style: TextStyle(fontSize: 16)),
                   const SizedBox(height: 12),
                   ElevatedButton(
                     onPressed: () {
                       Navigator.pushNamed(context, 'register');
-                    } ,
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Color(0xFF6750A4),
-                      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 12),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 15,
+                        vertical: 12,
+                      ),
                     ),
-                    child: const Text('Register', style: TextStyle(fontSize: 18, color: Colors.white)),
+                    child: const Text(
+                      'Register',
+                      style: TextStyle(fontSize: 18, color: Colors.white),
+                    ),
                   ),
                 ],
               ),
-            )
+            ),
           );
         }
         final user = snapshot.data!;
@@ -188,27 +195,55 @@ class _ProfilePageState extends State<ProfilePage> {
                         // -- PROFILE HEADER --
                         Container(
                           padding: const EdgeInsets.all(20),
-                          decoration: BoxDecoration( // Light purple background
+                          decoration: BoxDecoration(
+                            // Light purple background
                             borderRadius: BorderRadius.circular(100),
                           ),
                           child: CircleAvatar(
-                          radius: 50,
-                          backgroundImage: (profilePicturePath != '' && profilePicturePath.toString().startsWith('http'))
-                              ? NetworkImage(profilePicturePath)
-                              : const AssetImage('lib/assets/images/default_profile.png') as ImageProvider,
-                        ),
+                            radius: 50,
+                            backgroundImage:
+                                (profilePicturePath != '' &&
+                                        profilePicturePath
+                                            .toString()
+                                            .startsWith('http'))
+                                    ? NetworkImage(profilePicturePath)
+                                    : const AssetImage(
+                                          'lib/assets/images/default_profile.png',
+                                        )
+                                        as ImageProvider,
+                          ),
                         ),
                         const SizedBox(height: 30),
-                
+
                         // -- FORM FIELDS --
-                        _buildTextField(label: 'Email', controller: _emailController, enabled: false),
-                        _buildTextField(label: 'Full Name', controller: _fullNameController),
-                        _buildTextField(label: 'Date of Birth', controller: _dobController),
-                        _buildTextField(label: 'Gender', controller: _genderController),
-                        _buildTextField(label: 'Phone Number', controller: _phoneController),
-                
+                        _buildTextField(
+                          label: 'Email',
+                          controller: _emailController,
+                          enabled: false,
+                        ),
+                        _buildTextField(
+                          label: 'Full Name',
+                          controller: _fullNameController,
+                        ),
+                        _buildTextField(
+                          label: 'Date of Birth',
+                          controller: _dobController,
+                        ),
+                        _buildTextField(
+                          label: 'Gender',
+                          controller: _genderController,
+                        ),
+                        _buildTextField(
+                          label: 'Phone Number',
+                          controller: _phoneController,
+                        ),
+
                         // -- PASSWORD FIELD --
-                        _buildTextField(label: 'Password', controller: _passwordController, isPassword: true),
+                        _buildTextField(
+                          label: 'Password',
+                          controller: _passwordController,
+                          isPassword: true,
+                        ),
                         const Align(
                           alignment: Alignment.centerLeft,
                           child: Text(
@@ -217,18 +252,21 @@ class _ProfilePageState extends State<ProfilePage> {
                           ),
                         ),
                         if (_errorMessage.isNotEmpty)
-                        Padding(
-                          padding: const EdgeInsets.only(top: 8.0),
-                          child: Text(
-                            _errorMessage,
-                            style: TextStyle(
-                              color: _errorMessage.contains('SUCCESS') ? Colors.green : Colors.red,
-                              fontSize: 14,
+                          Padding(
+                            padding: const EdgeInsets.only(top: 8.0),
+                            child: Text(
+                              _errorMessage,
+                              style: TextStyle(
+                                color:
+                                    _errorMessage.contains('SUCCESS')
+                                        ? Colors.green
+                                        : Colors.red,
+                                fontSize: 14,
+                              ),
                             ),
                           ),
-                        ),
                         const SizedBox(height: 30),
-                
+
                         // -- CHANGE BUTTON --
                         ValueListenableBuilder<bool>(
                           valueListenable: _isPasswordFilled,
@@ -236,72 +274,98 @@ class _ProfilePageState extends State<ProfilePage> {
                             return SizedBox(
                               width: double.infinity,
                               child: ElevatedButton(
-                                onPressed: (!isFilled) ? null : () async {
-                                  String message = '';
-                                  bool success = false;
-                
-                                  final isChanged =
-                                      _fullNameController.text != initialProfileData['name'] ||
-                                      _dobController.text != initialProfileData['dob'] ||
-                                      _genderController.text != initialProfileData['gender'] ||
-                                      _phoneController.text != initialProfileData['phone'];
-                
-                                  if (!isChanged) {
-                                    setState(() {
-                                      _isPasswordFilled.value = false;
-                                      _passwordController.clear();
-                                      _errorMessage = 'No changes detected in your information.';
-                                    });
-                                    return;
-                                  }
-                
-                                  try {
-                                    final user = FirebaseAuth.instance.currentUser!;
-                                    final cred = EmailAuthProvider.credential(
-                                      email: user.email!,
-                                      password: _passwordController.text,
-                                    );
-                
-                                    await user.reauthenticateWithCredential(cred);
-                
-                                    await FirestoreProfile().updateUserProfile(
-                                      user.uid,
-                                      {
-                                        'name': _fullNameController.text,
-                                        'dob': _dobController.text,
-                                        'gender': _genderController.text,
-                                        'phone': _phoneController.text,
-                                      },
-                                    );
-                
-                                    success = true;
-                                    message = 'SUCCESS: Information updated successfully.';
-                                  } on FirebaseAuthException catch (e) {
-                                    message = 'Error: ${e.message}';
-                                  }
-                
-                                  setState(() {
-                                    _isPasswordFilled.value = false;
-                                    _passwordController.clear();
-                                    _errorMessage = message;
-                
-                                    if (!success) {
-                                      _fullNameController.text = initialProfileData['name'];
-                                      _dobController.text = initialProfileData['dob'];
-                                      _genderController.text = initialProfileData['gender'];
-                                      _phoneController.text = initialProfileData['phone'];
-                                    }
-                                  });
-                                },
+                                onPressed:
+                                    (!isFilled)
+                                        ? null
+                                        : () async {
+                                          String message = '';
+                                          bool success = false;
+
+                                          final isChanged =
+                                              _fullNameController.text !=
+                                                  initialProfileData['name'] ||
+                                              _dobController.text !=
+                                                  initialProfileData['dob'] ||
+                                              _genderController.text !=
+                                                  initialProfileData['gender'] ||
+                                              _phoneController.text !=
+                                                  initialProfileData['phone'];
+
+                                          if (!isChanged) {
+                                            setState(() {
+                                              _isPasswordFilled.value = false;
+                                              _passwordController.clear();
+                                              _errorMessage =
+                                                  'No changes detected in your information.';
+                                            });
+                                            return;
+                                          }
+
+                                          try {
+                                            final user =
+                                                FirebaseAuth
+                                                    .instance
+                                                    .currentUser!;
+                                            final cred =
+                                                EmailAuthProvider.credential(
+                                                  email: user.email!,
+                                                  password:
+                                                      _passwordController.text,
+                                                );
+
+                                            await user
+                                                .reauthenticateWithCredential(
+                                                  cred,
+                                                );
+
+                                            await FirestoreProfile()
+                                                .updateUserProfile(user.uid, {
+                                                  'name':
+                                                      _fullNameController.text,
+                                                  'dob': _dobController.text,
+                                                  'gender':
+                                                      _genderController.text,
+                                                  'phone':
+                                                      _phoneController.text,
+                                                });
+
+                                            success = true;
+                                            message =
+                                                'SUCCESS: Information updated successfully.';
+                                          } on FirebaseAuthException catch (e) {
+                                            message = 'Error: ${e.message}';
+                                          }
+
+                                          setState(() {
+                                            _isPasswordFilled.value = false;
+                                            _passwordController.clear();
+                                            _errorMessage = message;
+
+                                            if (!success) {
+                                              _fullNameController.text =
+                                                  initialProfileData['name'];
+                                              _dobController.text =
+                                                  initialProfileData['dob'];
+                                              _genderController.text =
+                                                  initialProfileData['gender'];
+                                              _phoneController.text =
+                                                  initialProfileData['phone'];
+                                            }
+                                          });
+                                        },
                                 // ---- Styling for Button ----
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: (!isFilled)
-                                      ? Colors.grey.shade300
-                                      : Colors.deepPurple,
-                                  foregroundColor:(!isFilled)
-                                      ? Colors.black54
-                                      : Colors.white,
-                                  padding: const EdgeInsets.symmetric(vertical: 16),
+                                  backgroundColor:
+                                      (!isFilled)
+                                          ? Colors.grey.shade300
+                                          : Colors.deepPurple,
+                                  foregroundColor:
+                                      (!isFilled)
+                                          ? Colors.black54
+                                          : Colors.white,
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 16,
+                                  ),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(8),
                                   ),
