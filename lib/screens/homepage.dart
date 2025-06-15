@@ -49,14 +49,6 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  void _handleDaftar(User? user) {
-    if (user == null) {
-      _showLoginDialog();
-    } else {
-      // Navigator.pushNamed(context, 'rsvp_event');
-    }
-  }
-
   void _goToMyRSVPs(User? user) {
     if (user == null) {
       _showLoginDialog();
@@ -111,7 +103,7 @@ class _HomePageState extends State<HomePage> {
                           child: Column(
                             children: [
                               const Text(
-                                'Buat Acaramu Sendiri!',
+                                'Quick Start Menu',
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold, fontSize: 16),
                               ),

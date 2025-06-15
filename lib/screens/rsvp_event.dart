@@ -1,3 +1,5 @@
+import 'package:event_kita_app/services/firestore_profile.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../services/firestore_rsvp.dart';
 
@@ -25,13 +27,28 @@ class _RsvpEventPageState extends State<RsvpEventPage> {
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController notesController = TextEditingController();
   final TextEditingController numberController = TextEditingController();
+  final FirestoreProfile firestoreProfile = FirestoreProfile();
 
   final FirestoreRsvpService rsvpService = FirestoreRsvpService();
   bool isSubmitting = false;
 
+  Future<void> _getNameAndPhone() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      final profile = await firestoreProfile.getUserProfile(user.uid);
+      if (profile != null) {
+        nameController.text = profile['name'] ?? '';
+        phoneController.text = profile['phone'] ?? '';
+      }
+    }
+  }
+
   @override
   void initState() {
     super.initState();
+    if (!widget.isEdit) {
+      _getNameAndPhone();
+    }
     if (widget.isEdit && widget.existingData != null) {
       nameController.text = widget.existingData!['name'] ?? '';
       phoneController.text = widget.existingData!['phone'] ?? '';
