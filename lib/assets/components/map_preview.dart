@@ -22,9 +22,11 @@ class MapPreview extends StatelessWidget {
         height: 200,
         child: FlutterMap(
           options: MapOptions(
-            center: LatLng(latitude, longitude),
-            zoom: zoom,
-            interactiveFlags: InteractiveFlag.none,
+            initialCenter: LatLng(latitude, longitude),
+            initialZoom: zoom,
+            interactionOptions: const InteractionOptions(
+              flags: InteractiveFlag.none,
+            ),
           ),
           children: [
             TileLayer(
@@ -37,10 +39,14 @@ class MapPreview extends StatelessWidget {
                   point: LatLng(latitude, longitude),
                   width: 40,
                   height: 40,
-                  child: const Icon(Icons.location_pin, color: Colors.red, size: 40),
+                  child: const Icon(
+                    Icons.location_pin,
+                    color: Colors.red,
+                    size: 40,
+                  ),
                 ),
               ],
-            )
+            ),
           ],
         ),
       ),

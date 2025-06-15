@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:event_kita_app/features/event_management/presentation/bloc/update_event/update_event_cubit.dart';
 import 'package:flutter/material.dart';
 
 import 'screens/homepage.dart';
@@ -13,7 +12,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 import 'features/event_management/event_management.dart';
-
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -33,12 +31,12 @@ class MyApp extends StatelessWidget {
     return MultiRepositoryProvider(
       providers: [
         RepositoryProvider<EventRepository>(
-          create: (context) => EventRepositoryImpl(
-            remoteDataSource: EventRemoteDataSourceImpl(
-              firestore:
-                  FirebaseFirestore.instance,
-            ),
-          ),
+          create:
+              (context) => EventRepositoryImpl(
+                remoteDataSource: EventRemoteDataSourceImpl(
+                  firestore: FirebaseFirestore.instance,
+                ),
+              ),
         ),
       ],
       child: MultiBlocProvider(
@@ -47,8 +45,8 @@ class MyApp extends StatelessWidget {
             create: (context) {
               final eventRepository = context.read<EventRepository>();
               return MyEventsListCubit(
-                getMyEventsUsecase: GetMyEvents(eventRepository),
-                deleteEventUsecase: DeleteEvent(eventRepository),
+                getMyEventsUseCase: GetMyEvents(eventRepository),
+                deleteEventUseCase: DeleteEvent(eventRepository),
               )..fetchMyEvents();
             },
           ),
@@ -56,7 +54,7 @@ class MyApp extends StatelessWidget {
             create: (context) {
               final eventRepository = context.read<EventRepository>();
               return CreateEventCubit(
-                createEventUsecase: CreateEvent(eventRepository),
+                createEventUseCase: CreateEvent(eventRepository),
               );
             },
           ),
@@ -64,7 +62,7 @@ class MyApp extends StatelessWidget {
             create: (context) {
               final eventRepository = context.read<EventRepository>();
               return UpdateEventCubit(
-                updateEventUsecase: UpdateEvent(eventRepository),
+                updateEventUseCase: UpdateEvent(eventRepository),
               );
             },
           ),
@@ -96,7 +94,7 @@ class MyApp extends StatelessWidget {
             'profile_page': (context) => const ProfilePage(),
             'search': (context) => const SearchPage(),
             'my-rsvp': (context) => const MyRSVPPage(),
-            'my-events': (context) => const MyEventsPage(), 
+            'my-events': (context) => const MyEventsPage(),
           },
           debugShowCheckedModeBanner: false,
         ),
@@ -119,7 +117,7 @@ class _MyHomePageState extends State<MyHomePage> {
     const HomePage(),
     const SearchPage(),
     const MyEventsPage(),
-    const ProfilePage()
+    const ProfilePage(),
   ];
 
   void _onItemTapped(int index) {
@@ -131,16 +129,16 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: IndexedStack(
-        index: _selectedIndex,
-        children: _pages,
-      ),
+      body: IndexedStack(index: _selectedIndex, children: _pages),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
           BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Search'),
-          BottomNavigationBarItem(icon: Icon(Icons.event_note), label: 'My Events'),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.event_note),
+            label: 'My Events',
+          ),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
         ],
         currentIndex: _selectedIndex,

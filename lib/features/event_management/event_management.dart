@@ -16,6 +16,7 @@ export 'domain/usecases/update_event.dart';
 // Layer Presentasi
 export 'presentation/bloc/create_event/create_event_cubit.dart';
 export 'presentation/bloc/my_events_list/my_events_list_cubit.dart';
+export 'presentation/bloc/update_event/update_event_cubit.dart';
 export 'presentation/screens/create_event_page.dart';
 export 'presentation/screens/my_events_page.dart';
 export 'presentation/widgets/event_form.dart';
