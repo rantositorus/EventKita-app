@@ -3,13 +3,13 @@ import 'package:equatable/equatable.dart';
 import 'package:event_kita_app/features/event_management/domain/entities/event_entity.dart';
 import 'package:event_kita_app/features/event_management/domain/usecases/get_my_events.dart';
 import 'package:event_kita_app/features/event_management/domain/usecases/delete_event.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 part 'my_events_list_state.dart';
 
 class MyEventsListCubit extends Cubit<MyEventsListState> {
   final GetMyEvents getMyEventsUseCase;
   final DeleteEvent deleteEventUseCase;
-  final String _currentCreatorId = "user123";
 
   MyEventsListCubit({
     required this.getMyEventsUseCase,
@@ -18,6 +18,12 @@ class MyEventsListCubit extends Cubit<MyEventsListState> {
 
   Future<void> fetchMyEvents() async {
     emit(MyEventsListLoading());
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      emit(MyEventsListError("User not authenticated"));
+      return;
+    }
+    final _currentCreatorId = user.uid;
     final failureOrEvents = await getMyEventsUseCase(_currentCreatorId);
     failureOrEvents.fold(
       (failure) => emit(MyEventsListError(failure.message)),
