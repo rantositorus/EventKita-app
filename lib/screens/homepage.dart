@@ -150,63 +150,14 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                       const SizedBox(height: 24),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          Text(
-                            'Highlighted Events',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          ElevatedButton.icon(
-                            label: const Text('Refresh'),
-                            icon: Icon(Icons.refresh),
-                            onPressed: () {
-                              setState(() {});
-                            },
-                          ),
-                        ],
+                      const Text(
+                        'Highlighted Events',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       const SizedBox(height: 12),
-                      // FutureBuilder(
-                      //   future: firestoreEvents.getTop3Events(),
-                      //   builder: (context, eventsSnapshot) {
-                      //     if (eventsSnapshot.connectionState ==
-                      //         ConnectionState.waiting) {
-                      //       return const Center(
-                      //           child: CircularProgressIndicator());
-                      //     }
-                      //     if (eventsSnapshot.hasError) {
-                      //       return Center(
-                      //           child: Text('Error: ${eventsSnapshot.error}'));
-                      //     }
-                      //     final events = eventsSnapshot.data ?? [];
-                      //     if (events.isEmpty) {
-                      //       return const Center(
-                      //           child: Text('No events found.'));
-                      //     }
-                      //     return Column(
-                      //       children: events
-                      //           .map((event) => EventCard(
-                      //         event: event,
-                      //         user: user,
-                      //         onDetails: (ctx, user) {
-                      //           setState(() {});
-                      //           Navigator.push(
-                      //             ctx,
-                      //             MaterialPageRoute(
-                      //               builder: (ctx) =>
-                      //                   EventDetailPage(event: event),
-                      //             ),
-                      //           );
-                      //         },
-                      //       ))
-                      //           .toList(),
-                      //     );
-                      //   },
-                      // ),
                       StreamBuilder<List<Map<String, dynamic>>>(
                         stream: firestoreEvents.getEventsStream(),
                         builder: (context, snapshot) {
