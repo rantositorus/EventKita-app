@@ -118,7 +118,7 @@ class FirestoreRsvpService {
 
     int total = 0;
     for (final doc in snapshot.docs) {
-      total += (doc.data()['attending'] ?? 1) as int;;
+      total += (doc.data()['attending'] ?? 1) as int;
     }
     return total;
   }

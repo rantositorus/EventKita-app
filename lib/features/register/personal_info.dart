@@ -258,7 +258,7 @@ class _PersonalInfoState extends State<PersonalInfo> {
                         }
                       ).copyWith(
                         // Override hint behavior for Dropdown if a value is selected
-                        hintText: _selectedGender == null ? 'Dropdown' : null,
+                        hintText: _selectedGender == null ? 'Gender' : null,
                       ),
                       style: const TextStyle(fontSize: 16, color: Colors.black87), // Ensure text color is visible
                       icon: Icon(Icons.arrow_drop_down, color: Colors.grey[700]),

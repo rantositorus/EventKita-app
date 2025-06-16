@@ -47,7 +47,23 @@ class _SearchPageState extends State<SearchPage> {
                   ),
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 8),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  ElevatedButton.icon(
+                    label: const Text("Refresh"),
+                    icon: Icon(Icons.refresh),
+                    onPressed: () {
+                      setState(() {
+                        searchQuery = '';
+                        searchController.clear();
+                      });
+                    },
+                  )
+                ],
+              ),
+              const SizedBox(height: 8),
               FutureBuilder<List<Map<String, dynamic>>>(
                 future: firestoreEvents.getEvents(),
                 builder: (context, eventsSnapshot) {

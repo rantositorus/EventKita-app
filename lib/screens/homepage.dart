@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../assets/components/event_card.dart';
 import '../screens/event_detail_page.dart';
 import '../screens/myrsvp_page.dart';
+import '../features/event_management/presentation/screens/create_event_page.dart';
 import '../services/firestore_profile.dart';
 import '../services/firestore_events.dart';
 
@@ -45,7 +46,10 @@ class _HomePageState extends State<HomePage> {
     if (user == null) {
       _showLoginDialog();
     } else {
-      // Navigator.pushNamed(context, 'create_event');
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const CreateEventPage()),
+      );
     }
   }
 
@@ -140,10 +144,22 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                       const SizedBox(height: 24),
-                      const Text(
-                        'Highlighted Events',
-                        style: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [    
+                          Text(
+                            'Highlighted Events',
+                            style: TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.bold),
+                          ),
+                          ElevatedButton.icon(
+                            label: const Text('Refresh'),
+                            icon: Icon(Icons.refresh),
+                            onPressed: () {
+                              setState(() {});
+                            },
+                          )
+                        ],
                       ),
                       const SizedBox(height: 12),
                       FutureBuilder(
@@ -169,6 +185,7 @@ class _HomePageState extends State<HomePage> {
                               event: event,
                               user: user,
                               onDetails: (ctx, user) {
+                                setState(() {});
                                 Navigator.push(
                                   ctx,
                                   MaterialPageRoute(
