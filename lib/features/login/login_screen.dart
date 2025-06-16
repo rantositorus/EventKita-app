@@ -1,6 +1,3 @@
-// FILE: lib/features/authentication/presentation/screens/login_page_simple.dart
-
-import 'package:event_kita_app/main.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 

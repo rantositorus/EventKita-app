@@ -4,6 +4,7 @@ import 'package:uuid/uuid.dart';
 import 'package:event_kita_app/features/event_management/domain/entities/event_entity.dart';
 import 'package:event_kita_app/features/event_management/domain/entities/location_entity.dart';
 import 'package:event_kita_app/features/event_management/domain/usecases/create_event.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 part 'create_event_state.dart';
 
@@ -18,10 +19,16 @@ class CreateEventCubit extends Cubit<CreateEventState> {
     print('Data yang diterima: $eventData');
     emit(CreateEventLoading());
     try {
+      final user = FirebaseAuth.instance.currentUser;
+      if (user == null) {
+        emit(CreateEventError('User not authenticated'));
+        return;
+      }
+
       final now = DateTime.now();
       final event = EventEntity(
         id: _uuid.v4(),
-        creatorId: "user123",
+        creatorId: user.uid,
         title: eventData['title'] ?? 'Event Title',
         description: eventData['description'] ?? 'Event Description',
         dateTime: eventData['dateTime'] ?? now,
