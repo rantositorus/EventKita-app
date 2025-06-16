@@ -22,23 +22,24 @@ class _HomePageState extends State<HomePage> {
   void _showLoginDialog() {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Authentication Required'),
-        content: const Text('Please login or register to continue.'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Login'),
+      builder:
+          (context) => AlertDialog(
+            title: const Text('Authentication Required'),
+            content: const Text('Please login or register to continue.'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('Login'),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  Navigator.pushNamed(context, 'register');
+                },
+                child: const Text('Register'),
+              ),
+            ],
           ),
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-              Navigator.pushNamed(context, 'register');
-            },
-            child: const Text('Register'),
-          ),
-        ],
-      ),
     );
   }
 
@@ -75,9 +76,10 @@ class _HomePageState extends State<HomePage> {
           backgroundColor: const Color(0xFFF8F1FF),
           body: SafeArea(
             child: FutureBuilder<String>(
-              future: user != null
-                  ? firestoreProfile.getName(user.uid)
-                  : Future.value(''),
+              future:
+                  user != null
+                      ? firestoreProfile.getName(user.uid)
+                      : Future.value(''),
               builder: (context, nameSnapshot) {
                 final username = nameSnapshot.data ?? '';
 
@@ -103,13 +105,17 @@ class _HomePageState extends State<HomePage> {
                             borderRadius: BorderRadius.circular(20),
                           ),
                           padding: const EdgeInsets.symmetric(
-                              horizontal: 24, vertical: 16),
+                            horizontal: 24,
+                            vertical: 16,
+                          ),
                           child: Column(
                             children: [
                               const Text(
                                 'Quick Start Menu',
                                 style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 16),
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),
                               ),
                               const SizedBox(height: 8),
                               ElevatedButton(
@@ -146,11 +152,13 @@ class _HomePageState extends State<HomePage> {
                       const SizedBox(height: 24),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [    
+                        children: [
                           Text(
                             'Highlighted Events',
                             style: TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.bold),
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                           ElevatedButton.icon(
                             label: const Text('Refresh'),
@@ -158,44 +166,89 @@ class _HomePageState extends State<HomePage> {
                             onPressed: () {
                               setState(() {});
                             },
-                          )
+                          ),
                         ],
                       ),
                       const SizedBox(height: 12),
-                      FutureBuilder(
-                        future: firestoreEvents.getTop3Events(),
-                        builder: (context, eventsSnapshot) {
-                          if (eventsSnapshot.connectionState ==
+                      // FutureBuilder(
+                      //   future: firestoreEvents.getTop3Events(),
+                      //   builder: (context, eventsSnapshot) {
+                      //     if (eventsSnapshot.connectionState ==
+                      //         ConnectionState.waiting) {
+                      //       return const Center(
+                      //           child: CircularProgressIndicator());
+                      //     }
+                      //     if (eventsSnapshot.hasError) {
+                      //       return Center(
+                      //           child: Text('Error: ${eventsSnapshot.error}'));
+                      //     }
+                      //     final events = eventsSnapshot.data ?? [];
+                      //     if (events.isEmpty) {
+                      //       return const Center(
+                      //           child: Text('No events found.'));
+                      //     }
+                      //     return Column(
+                      //       children: events
+                      //           .map((event) => EventCard(
+                      //         event: event,
+                      //         user: user,
+                      //         onDetails: (ctx, user) {
+                      //           setState(() {});
+                      //           Navigator.push(
+                      //             ctx,
+                      //             MaterialPageRoute(
+                      //               builder: (ctx) =>
+                      //                   EventDetailPage(event: event),
+                      //             ),
+                      //           );
+                      //         },
+                      //       ))
+                      //           .toList(),
+                      //     );
+                      //   },
+                      // ),
+                      StreamBuilder<List<Map<String, dynamic>>>(
+                        stream: firestoreEvents.getEventsStream(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
                               ConnectionState.waiting) {
                             return const Center(
-                                child: CircularProgressIndicator());
+                              child: CircularProgressIndicator(),
+                            );
                           }
-                          if (eventsSnapshot.hasError) {
+                          if (snapshot.hasError) {
                             return Center(
-                                child: Text('Error: ${eventsSnapshot.error}'));
+                              child: Text('Error: ${snapshot.error}'),
+                            );
                           }
-                          final events = eventsSnapshot.data ?? [];
+                          final events = snapshot.data ?? [];
                           if (events.isEmpty) {
                             return const Center(
-                                child: Text('No events found.'));
+                              child: Text('No events found.'),
+                            );
                           }
                           return Column(
-                            children: events
-                                .map((event) => EventCard(
-                              event: event,
-                              user: user,
-                              onDetails: (ctx, user) {
-                                setState(() {});
-                                Navigator.push(
-                                  ctx,
-                                  MaterialPageRoute(
-                                    builder: (ctx) =>
-                                        EventDetailPage(event: event),
-                                  ),
-                                );
-                              },
-                            ))
-                                .toList(),
+                            children:
+                                events
+                                    .map(
+                                      (event) => EventCard(
+                                        event: event,
+                                        user: user,
+                                        onDetails: (ctx, user) {
+                                          setState(() {});
+                                          Navigator.push(
+                                            ctx,
+                                            MaterialPageRoute(
+                                              builder:
+                                                  (ctx) => EventDetailPage(
+                                                    event: event,
+                                                  ),
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    )
+                                    .toList(),
                           );
                         },
                       ),

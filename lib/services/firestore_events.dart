@@ -42,15 +42,31 @@ class FirestoreEvents {
   }
 
   Future<List<Map<String, dynamic>>> getTop3Events() async {
-    QuerySnapshot snapshot = await _firestore
-        .collection('events')
-        .orderBy('capacity', descending: true)
-        .limit(3)
-        .get();
+    QuerySnapshot snapshot =
+        await _firestore
+            .collection('events')
+            .orderBy('capacity', descending: true)
+            .limit(3)
+            .get();
     return snapshot.docs.map((doc) {
       final data = doc.data() as Map<String, dynamic>;
       data['id'] = doc.id;
       return data;
     }).toList();
+  }
+
+  Stream<List<Map<String, dynamic>>> getEventsStream() {
+    return _firestore
+        .collection('events')
+        .orderBy('capacity', descending: true)
+        .limit(3)
+        .snapshots()
+        .map((snapshot) {
+          return snapshot.docs.map((doc) {
+            final data = doc.data();
+            data['id'] = doc.id;
+            return data;
+          }).toList();
+        });
   }
 }
