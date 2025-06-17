@@ -20,19 +20,23 @@ Event Kita merupakan aplikasi RSVP dan menejemen acara. User dapat membuat acara
 ## Member's Contribution
 5025221017 - Valentino Reswara Ajiputra
 - Manajemen profil
+- Register Page
 - Home Page
 - Splash Screen & Icon
+- CRUD: Personal Information
 
 5025221227 - Gavrila Nirwasita
 - Search Page
 - Details Page
 - Lihat RSVP Saya Page
-- RSVP page 
+- RSVP page
+- CRUD: RSVP
 
 5025221228 - Ranto Sitorus
 - Buat Acara Page
 - Login Page
 - My Events Page
+- CRUD: Events
 
 
 
