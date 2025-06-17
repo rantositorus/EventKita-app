@@ -2,6 +2,40 @@
 
 Final Project Mata Kuliah "Mobile Programming"
 
+Event Kita merupakan aplikasi RSVP dan menejemen acara. User dapat membuat acara, mengatur acara yang sudah dibuat, mencari acara yang mau di datangi, melakukan konfirmasi kehadianr (RSVP) dan mengatur RSVP yang sudah dibuat. Aplikasi ini juga dirancang untuk mengatur acara skala besar maupun skala kecil.
+
+### Home Page
+![image](https://github.com/user-attachments/assets/28c2c605-48d3-49bc-9ebe-f544ead543dd)
+
+### Search Page
+![image](https://github.com/user-attachments/assets/77bb97ab-d8fa-4090-9269-761fcf29d0d5)
+
+### Details Page
+![image](https://github.com/user-attachments/assets/41ef9306-5be0-471f-8475-342ffe3c7dd4)
+
+### My Events Page
+![image](https://github.com/user-attachments/assets/d98a1d60-8999-4d68-8e40-665ec15b1729)
+
+
+## Member's Contribution
+5025221017 - Valentino Reswara Ajiputra
+- Manajemen profil
+- Home Page
+- Splash Screen & Icon
+
+5025221227 - Gavrila Nirwasita
+- Search Page
+- Details Page
+- Lihat RSVP Saya Page
+- RSVP page 
+
+5025221228 - Ranto Sitorus
+- Buat Acara Page
+- Login Page
+- My Events Page
+
+
+
 ## Cara Menggunakan
 
 ### Step 1: Clone Repository
